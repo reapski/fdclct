@@ -50,7 +50,7 @@ class Keylights:
         Maybe use hsl instead rgb and only use intensive colors.
         """
         fullcolorstr = ''
-        for _ in range(0,72):
+        for _ in range(72):
             color = Color(rgb=(random.uniform(0.0, 1.0), random.uniform(0.0, 1.0), random.uniform(0.0, 1.0)))
             fullcolorstr += color.hex_l[1:]
         self.adapter.sendhex(fullcolorstr)
@@ -62,14 +62,11 @@ class Keylights:
 
         if not isinstance(color, Color):
             color = Color(color)
-        
+
         oldcolorstr = self.adapter.gethex()
         fullcolorstr = ''
-        for i in range(0,72):
-            if i == keycode:
-                colstr = color.hex_l[1:]
-            else:
-                colstr = oldcolorstr[i*6:(i+1)*6]
+        for i in range(72):
+            colstr = color.hex_l[1:] if i == keycode else oldcolorstr[i*6:(i+1)*6]
             fullcolorstr += colstr
         self.adapter.sendhex(fullcolorstr)
 
@@ -83,7 +80,11 @@ class Keylights:
     def getcolors(self):
         colstring = self.adapter.gethex()
         inv_keymap = {v: k for k,v in keymap.items()}
-        keycolors = {}
-        for i in range(72):
-            keycolors[inv_keymap[i]] = (colstring[i*6:i*6+2],colstring[i*6+2:i*6+4],colstring[i*6+4:i*6+6])
-        return keycolors
+        return {
+            inv_keymap[i]: (
+                colstring[i * 6 : i * 6 + 2],
+                colstring[i * 6 + 2 : i * 6 + 4],
+                colstring[i * 6 + 4 : i * 6 + 6],
+            )
+            for i in range(72)
+        }
