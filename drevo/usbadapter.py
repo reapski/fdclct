@@ -44,7 +44,7 @@ class Usbadapter(ABC):
         msglenlast = '21'
 
         self.write(self.initwritemsg)
-        for i in range(0, 3):
+        for i in range(3):
             self.write(
                 bytearray.fromhex(header + msglen + hexstr[i*122:(i+1)*122])
             )
